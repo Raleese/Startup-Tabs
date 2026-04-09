@@ -27,14 +27,6 @@ def add_website(url):
         config["websites"].append(url)
         save_config(config)
 
-def edit_website(old_url, new_url):
-    config = load_config()
-    if old_url in config["websites"]:
-        if new_url not in config["websites"]:
-            config["websites"].remove(old_url)
-            config["websites"].append(new_url)
-            save_config(config)
-
 def delete_website(url):
     config = load_config()
     if url in config["websites"]:
