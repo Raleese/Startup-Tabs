@@ -20,6 +20,7 @@ class SimpleApp(tk.Tk):
         self.startup_toggle_btn = None
 
         self._build_ui()
+        self._sync_startup_registration()
 
     def _build_ui(self):
         container = ttk.Frame(self, padding=16)
@@ -67,7 +68,6 @@ class SimpleApp(tk.Tk):
         if not text.startswith(("http://", "https://")):
             text = "https://" + text
 			
-        print(text)
         add_website(text)
         self.refresh(tasks)
         entry.delete(0, tk.END)
@@ -82,14 +82,17 @@ class SimpleApp(tk.Tk):
     def _startup_button_label(self):
         return "On" if self.startup_enabled else "Off"
 
-    def startup_button(self):
-        self.startup_enabled = not self.startup_enabled
-        set_startup(self.startup_enabled)
-
+    def _sync_startup_registration(self):
         if self.startup_enabled:
             enable_startup()
         else:
             disable_startup()
+
+    def startup_button(self):
+        self.startup_enabled = not self.startup_enabled
+        set_startup(self.startup_enabled)
+
+        self._sync_startup_registration()
             
         if self.startup_toggle_btn is not None:
             self.startup_toggle_btn.config(text=self._startup_button_label())
