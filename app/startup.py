@@ -12,7 +12,7 @@ def enable_startup():
     content = (
         "@echo off\n"
         f'cd /d "{project_root}"\n'
-        f'"{python_exe}" -m app.startup_config\n'
+        f'"{python_exe}" -m app.run_config\n'
     )
 
     with open(BAT_FILE, "w") as f:
