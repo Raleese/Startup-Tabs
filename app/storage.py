@@ -19,7 +19,7 @@ def load_config():
 
 def save_config(config):
     with open(CONFIG_PATH, "w") as f:
-        json.dump(config, f)
+        json.dump(config, f, indent=2)
 
 def add_website(url):
     config = load_config()
