@@ -1,7 +1,6 @@
 {
   "startup_enabled": true,
   "websites": [
-    "https://web",
-    "https://abc"
+
   ]
 }
