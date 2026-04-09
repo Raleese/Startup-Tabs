@@ -1,6 +1,6 @@
 # Startup-Tabs
 
-Startup-Tabs is a small Windows desktop app that opens your saved websites when you sign in.
+Startup-Tabs is a small Windows desktop app that opens your saved websites when you start your computer and sign in.
 
 ## Screenshots
 
