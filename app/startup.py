@@ -7,7 +7,6 @@ BAT_FILE = STARTUP_FOLDER / "startup_tabs.bat"
 
 def enable_startup():
     project_root = Path(__file__).resolve().parent.parent
-    runner_path = project_root / "app" / "startup_config.py"
     python_exe = sys.executable
 
     content = (
