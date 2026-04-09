@@ -2,9 +2,9 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 
 try:
-    from .storage import load_config, add_website, edit_website, delete_website, set_startup
+    from .storage import load_config, add_website, delete_website, set_startup, sync_login_startup_with_config
 except ImportError:
-    from storage import load_config, add_website, edit_website, delete_website, set_startup
+    from storage import load_config, add_website, delete_website, set_startup, sync_login_startup_with_config
 
 class SimpleApp(tk.Tk):
     def __init__(self):
@@ -12,6 +12,11 @@ class SimpleApp(tk.Tk):
         self.title("Startup-Tabs")
         self.geometry("520x420")
         self.minsize(480, 360)
+
+        config = load_config()
+        self.startup_enabled = config.get("startup_enabled", True)
+        self.startup_toggle_btn = None
+        sync_login_startup_with_config()
 
         self._build_ui()
 
@@ -43,9 +48,15 @@ class SimpleApp(tk.Tk):
         button_row = ttk.Frame(container)
         button_row.pack(fill="x", pady=(12, 0))
 
-        #ttk.Button(button_row, text="Edit", command=self.edit_button()).pack(side="left")
-        ttk.Button(button_row, text="Delete", command=self.delete_button()).pack(side="left", padx=8)
-        ttk.Button(button_row, text="On", command=self.startup_button()).pack(side="right")
+        ttk.Button(button_row, text="Delete", command=lambda: self.delete_button(task_list)).pack(side="left", padx=8)
+        self.startup_toggle_btn = ttk.Button(
+            button_row,
+            text=self._startup_button_label(),
+            command=self.startup_button,
+        )
+        self.startup_toggle_btn.pack(side="right")
+
+        self.refresh(task_list)
 		
     def add_button(self, entry, tasks):
         text = entry.get().strip()
@@ -60,16 +71,29 @@ class SimpleApp(tk.Tk):
         self.refresh(tasks)
         entry.delete(0, tk.END)
 
-    def delete_button(self):
-        pass
-	
-    def edit_button(self):
-        pass
-	
+    def delete_button(self, tasks):
+        selection = tasks.curselection()
+        if selection:
+            item = tasks.get(selection)
+            delete_website(item)
+            self.refresh(tasks)
+
+    def _startup_button_label(self):
+        return "On" if self.startup_enabled else "Off"
+
     def startup_button(self):
-        pass
-	
+        self.startup_enabled = not self.startup_enabled
+        configured = set_startup(self.startup_enabled)
+        if self.startup_toggle_btn is not None:
+            self.startup_toggle_btn.configure(text=self._startup_button_label())
+        if not configured:
+            messagebox.showwarning(
+                "Startup Setup",
+                "Startup preference was saved, but Windows login startup could not be configured automatically.",
+            )
+
     def refresh(self, tasks):
+        tasks.delete(0, tk.END)
         config = load_config()
         for web in config["websites"]:
              tasks.insert(tk.END, web)
@@ -77,6 +101,3 @@ class SimpleApp(tk.Tk):
 def launch_app():
     app = SimpleApp()
     app.mainloop()
-	
-if __name__ == "__main__":
-    launch_app()
