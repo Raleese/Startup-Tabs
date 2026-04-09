@@ -2,6 +2,10 @@
 
 Startup-Tabs is a small Windows desktop app that opens your saved websites when you sign in.
 
+## Screenshots
+
+<img width="1032" height="888" alt="image" src="https://github.com/user-attachments/assets/daa21aed-d22e-4434-9d64-d6ba59364207" />
+
 ## Features
 
 - Add and remove website URLs from a simple GUI.
