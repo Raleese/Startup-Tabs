@@ -2,9 +2,11 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 
 try:
-    from .storage import load_config, add_website, delete_website, set_startup, sync_login_startup_with_config
+    from .storage import load_config, add_website, delete_website, set_startup
+    from .startup import enable_startup, disable_startup
 except ImportError:
-    from storage import load_config, add_website, delete_website, set_startup, sync_login_startup_with_config
+    from storage import load_config, add_website, delete_website, set_startup
+    from startup import enable_startup, disable_startup
 
 class SimpleApp(tk.Tk):
     def __init__(self):
@@ -16,7 +18,6 @@ class SimpleApp(tk.Tk):
         config = load_config()
         self.startup_enabled = config.get("startup_enabled", True)
         self.startup_toggle_btn = None
-        sync_login_startup_with_config()
 
         self._build_ui()
 
@@ -83,14 +84,15 @@ class SimpleApp(tk.Tk):
 
     def startup_button(self):
         self.startup_enabled = not self.startup_enabled
-        configured = set_startup(self.startup_enabled)
+        set_startup(self.startup_enabled)
+
+        if self.startup_enabled:
+            enable_startup()
+        else:
+            disable_startup()
+            
         if self.startup_toggle_btn is not None:
-            self.startup_toggle_btn.configure(text=self._startup_button_label())
-        if not configured:
-            messagebox.showwarning(
-                "Startup Setup",
-                "Startup preference was saved, but Windows login startup could not be configured automatically.",
-            )
+            self.startup_toggle_btn.config(text=self._startup_button_label())
 
     def refresh(self, tasks):
         tasks.delete(0, tk.END)
